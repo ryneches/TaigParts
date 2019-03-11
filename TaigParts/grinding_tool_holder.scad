@@ -5,7 +5,8 @@ top_width = 3.00 * mmpi;
 top_depth = 2.50 * mmpi;
 
 bottom_width = 3.25 * mmpi;
-bottom_depth = 2.75 * mmpi;
+bottom_depth = 3.00 * mmpi;
+
 
 hole_depth   = 0.75 * mmpi;
 
@@ -22,7 +23,7 @@ arbor_h  = 2   * mmpi ;
 arbor_r  = 1/2 * mmpi + 1.0;
 
 nut_h    = ((7/4)    ) * mmpi;
-nut_r    = ((9/16) /2) * mmpi + 1.0;
+nut_r    = 15;
 
 spacing  = 0.125 * mmpi;
 depth    = 0.75 * mmpi;
@@ -39,10 +40,12 @@ difference() {
     translate( [ -21, -16, 0.25 * mmpi ] )
         cylinder( r=arbor_r, h=arbor_h );
     
-    translate( [ 19, -19, 0.25 * mmpi ] )
-        cylinder( r=nut_r, h=nut_h, $fn=6 );
+    translate( [ 20, -20, 1.0 * mmpi ] )
+        rotate( [ 0, 0, 30 ] )
+            Hexagone( nut_r, nut_h );
+    //    cylinder( r=nut_r, h=nut_h, $fn=6 );
     
-    translate( [ -wheelstack/2, 10, 30 ] )
+    translate( [ -wheelstack/2, 12, 30 ] )
         rotate( [0,90,0] ) {
             translate( [ 0, wheel3_r - wheel1_r, 0 ] )
                 cylinder( r=wheel1_r, h=wheel1_h );
@@ -52,3 +55,24 @@ difference() {
                 cylinder( r=wheel3_r, h=wheel3_h );
         }
     }
+ 
+// from thing:277727   
+module Hexagone(cle,h)
+{
+	angle = 360/6;		// 6 pans
+	cote = cle * cot(angle);
+	echo(angle, cot(angle), cote);
+	echo(acos(.6));
+
+	union()
+	{
+		rotate([0,0,0])
+			cube([cle,cote,h],center=true);
+		rotate([0,0,angle])
+			cube([cle,cote,h],center=true);
+		rotate([0,0,2*angle])
+			cube([cle,cote,h],center=true);
+	}
+}
+
+function cot(x)=1/tan(x);
